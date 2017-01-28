@@ -7,7 +7,9 @@
                  [re-frame "0.9.1"]
                  [re-frisk "0.3.2"]
                  [org.clojure/core.async "0.2.391"]
-                 [re-com "0.8.3"]]
+                 [re-com "0.8.3"]
+                 [com.cemerick/piggieback "0.2.1"]
+                 [figwheel-sidecar "0.5.0-2"]]
 
   :plugins [[lein-cljsbuild "1.1.4"]]
 
@@ -18,6 +20,8 @@
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
   :figwheel {:css-dirs ["resources/public/css"]}
+
+  :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
 
   :profiles
   {:dev
