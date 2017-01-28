@@ -1,0 +1,29 @@
+#task-list .rc-label.done {
+    transition: color 0.4s;
+    text-decoration: line-through;
+}
+
+.task-action {
+    color: rgba(122, 123, 122, 0.5);
+    transition: color 0.2s ease-out;
+}
+
+.task-action:hover {
+    color: rgb(122, 123, 122);
+}
+
+.task-done-toggle.on {
+    color: #4CAF50;
+}
+
+.task-stared-toggle.on {
+    color: rgba(255, 193, 7, 0.75);
+}
+
+.task-stared-toggle.on:hover {
+    color: rgb(255, 193, 7);
+}
+
+.task-done {
+    opacity: 0.3;
+}
