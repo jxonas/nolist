@@ -53,7 +53,7 @@
   [rc/box
    :size "none"
    :child [rc/md-icon-button
-           :md-icon-name (if done "zmdi-check" "zmdi-square-o")
+           :md-icon-name "zmdi-check"
            :class (str "task-action task-done-toggle " (if done "on " "off "))
            :on-click #(dispatch [:toggle-task-done id])
            :size :smaller]])
