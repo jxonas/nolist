@@ -1,7 +1,8 @@
 (ns nolist.views
   (:require [re-frame.core :as re-frame :refer [subscribe dispatch]]
             [reagent.core :as r]
-            [re-com.core :as rc]))
+            [re-com.core :as rc]
+            [nolist.components :as c]))
 
 (defn showing-selector []
   (let [showing @(subscribe [:showing])
@@ -36,18 +37,9 @@
                                      [a-fn :done "Completed"]]]]]))
 
 (defn task-input []
-  (let [text (r/atom "")]
-    (fn []
-      [rc/input-text
-       :model text
-       :placeholder "What are we doing today?"
-       :on-change #(reset! text %)
-       :change-on-blur? false
-       :width "500px"
-       :attr {:on-key-up (fn [e]
-                           (when (= 13 (.-keyCode e)) ; `Enter` key
-                             (dispatch [:add-task @text])
-                             (reset! text "")))}])))
+  [c/input
+   {:on-save #(dispatch [:add-task %])
+    :placeholder "What are we doing today?"}])
 
 (defn toggle-task-done [id done]
   [rc/box
@@ -66,6 +58,26 @@
            :class (str "task-action task-stared-toggle " (if stared "on " "off "))
            :on-click #(dispatch [:toggle-task-stared id])
            :size :smaller]])
+
+(defn task-link []
+  (let [show-url-modal (r/atom false)]
+    (fn [id url]
+      [:div
+       [rc/box
+        :size "none"
+        :child [rc/md-icon-button
+                :md-icon-name "zmdi-link"
+                :class "task-action"
+                :on-click #(reset! show-url-modal true)
+                :size :smaller]]
+       (when @show-url-modal
+         [rc/modal-panel
+          :backdrop-on-click #(reset! show-url-modal false)
+          :child [c/input
+                  {:value (or url "")
+                   :placeholder "task url..."
+                   :on-save #(do (dispatch [:set-task-url id %])
+                                 (reset! show-url-modal false))}]])])))
 
 (defn todo-input [{:keys [title on-save on-stop]}]
   (let [val (r/atom title)
@@ -89,9 +101,10 @@
 
 (defn task-title []
   (let [editing (r/atom false)]
-    (fn [id title done]
+    (fn [id title done url]
       [rc/box
        :size "auto"
+       :attr {:on-double-click #(reset! editing true)}
        :child (if @editing
                 [todo-input
                  {:class "edit"
@@ -99,8 +112,7 @@
                   :on-save #(dispatch [:update-task-title id %])
                   :on-stop #(reset! editing false)}]
                 [rc/label
-                 :label title
-                 :attr {:on-double-click #(reset! editing true)}
+                 :label (if-not (seq url) title [:a {:href url, :target "_blank"} title])
                  :class (when done "done")])])))
 
 (defn complete-and-reentry-task [id title]
@@ -122,14 +134,15 @@
            :size :smaller]])
 
 (defn task-item []
-  (fn [{:keys [id title stared done]} focus]
+  (fn [{:keys [id title stared done url]} focus]
     [rc/h-box
      :class (when done "task-done")
      :gap "2px"
      :children [(when-not focus [toggle-task-stared id stared])
                 (when focus [toggle-task-done id done])
                 (when focus [complete-and-reentry-task id title])
-                [task-title id title done]
+                [task-title id title done url]
+                [task-link id url]
                 [delete-task id]]]))
 
 (defn task-list []

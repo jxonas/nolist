@@ -1,5 +1,6 @@
 (ns nolist.db
-  (:require [cljs.spec :as s]
+  (:require [cljs.reader]
+            [cljs.spec :as s]
             [re-frame.core :refer [reg-cofx]]))
 
 (s/def ::date #(instance? js/Date %))
@@ -10,10 +11,11 @@
 (s/def ::stared boolean?)
 (s/def ::created ::date)
 (s/def ::updated ::date)
+(s/def ::link string?)
 
 (s/def ::task
   (s/keys :req-un [::id ::title ::done]
-          :opt-un [::created ::updated ::stared]))
+          :opt-un [::created ::updated ::stared ::link]))
 
 (s/def ::tasks
   (s/map-of ::id ::task))
