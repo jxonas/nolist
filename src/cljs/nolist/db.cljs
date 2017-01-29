@@ -1,5 +1,6 @@
 (ns nolist.db
-  (:require [cljs.spec :as s]))
+  (:require [cljs.spec :as s]
+            [re-frame.core :refer [reg-cofx]]))
 
 (s/def ::date #(instance? js/Date %))
 
@@ -22,9 +23,25 @@
 
 (s/def ::db (s/keys :req-un [::tasks ::showing ::focus]))
 
-
-
 (def default-db
   {:tasks (sorted-map)
    :showing :all
    :focus false})
+
+;; Local storage
+
+(def ls-key "nolist")
+
+(defn tasks->local-storage
+  "Puts tasks into localStorage"
+  [tasks]
+  (.setItem js/localStorage ls-key (str tasks)))
+
+(reg-cofx
+ :local-storage-tasks
+ (fn [cofx _]
+   "Read in tasks from localStorage and process into a map we can merge into app-db."
+   (assoc cofx :local-storage-tasks
+          (into (sorted-map)
+                (some->> (.getItem js/localStorage ls-key)
+                         (cljs.reader/read-string))))))

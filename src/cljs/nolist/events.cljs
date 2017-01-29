@@ -1,6 +1,6 @@
 (ns nolist.events
-  (:require [re-frame.core :refer [reg-event-db reg-event-fx after path trim-v debug]]
-            [nolist.db :as db]
+  (:require [re-frame.core :refer [reg-event-db reg-event-fx inject-cofx after path trim-v debug]]
+            [nolist.db :refer [default-db tasks->local-storage]]
             [cljs.spec :as s]))
 
 ;; Utilities
@@ -21,9 +21,14 @@
 
 (def check-spec-interceptor (after (partial check-and-throw :nolist.db/db)))
 
+;; this interceptor stores tasks into local storage
+;; we attach it to each event handler which could update tasks
+(def ->local-storage (after tasks->local-storage))
+
 (def task-interceptors
   [check-spec-interceptor
    (path :tasks)
+   ->local-storage
    (when ^boolean js/goog.DEBUG debug)
    trim-v])
 
@@ -40,7 +45,6 @@
  [check-spec-interceptor (path :focus) trim-v]
  (fn [old]
    (not old)))
-
 
 (reg-event-db
  :add-task
@@ -79,7 +83,9 @@
    {:db (assoc-in db [:tasks id :done] true)
     :dispatch [:add-task title]}))
 
-(reg-event-db
+(reg-event-fx
  :initialize-db
- (fn  [_ _]
-   db/default-db))
+ [(inject-cofx :local-storage-tasks)
+  check-spec-interceptor]
+ (fn [{:keys [db local-storage-tasks]} _]
+   {:db (assoc default-db :tasks local-storage-tasks)}))
