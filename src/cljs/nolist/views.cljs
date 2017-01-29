@@ -67,13 +67,41 @@
            :on-click #(dispatch [:toggle-task-stared id])
            :size :smaller]])
 
-(defn task-title [id title done]
+(defn todo-input [{:keys [title on-save on-stop]}]
+  (let [val (r/atom title)
+        stop #(do (reset! val "")
+                  (when on-stop (on-stop)))
+        save #(let [v (-> @val str clojure.string/trim)]
+                (when (seq v) (on-save v))
+                (stop))]
+    (fn [props]
+      [:input (merge props
+                     {:type "text"
+                      :value @val
+                      :auto-focus true
+                      :on-blur save
+                      :style {:width "100%"}
+                      :on-change #(reset! val (-> % .-target .-value))
+                      :on-key-down #(case (.-which %)
+                                      13 (save)
+                                      27 (stop)
+                                      nil)})])))
+
+(defn task-title []
   (let [editing (r/atom false)]
-    [rc/box
-     :size "auto"
-     :child [rc/label
-             :label title
-             :class (when done "done")]]))
+    (fn [id title done]
+      [rc/box
+       :size "auto"
+       :child (if @editing
+                [todo-input
+                 {:class "edit"
+                  :title title
+                  :on-save #(dispatch [:update-task-title id %])
+                  :on-stop #(reset! editing false)}]
+                [rc/label
+                 :label title
+                 :attr {:on-double-click #(reset! editing true)}
+                 :class (when done "done")])])))
 
 (defn complete-and-reentry-task [id title]
   [rc/box
