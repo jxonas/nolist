@@ -31,9 +31,9 @@
                           :gap "10px"
                           :size "auto"
                           :justify :end
-                          :children [[a-fn :active "Active"]
-                                     [a-fn :all "All"]
-                                     [a-fn :done "Complete"]]]]]))
+                          :children [[a-fn :all "All"]
+                                     [a-fn :active "Active"]
+                                     [a-fn :done "Completed"]]]]]))
 
 (defn task-input []
   (let [text (r/atom "")]
@@ -68,11 +68,12 @@
            :size :smaller]])
 
 (defn task-title [id title done]
-  [rc/box
-   :size "auto"
-   :child [rc/label
-           :label title
-           :class (when done "done")]])
+  (let [editing (r/atom false)]
+    [rc/box
+     :size "auto"
+     :child [rc/label
+             :label title
+             :class (when done "done")]]))
 
 (defn complete-and-reentry-task [id title]
   [rc/box
@@ -93,27 +94,27 @@
            :size :smaller]])
 
 (defn task-item []
-  (let [editing (r/atom false)]
-    (fn [{:keys [id title stared done]}]
-      [rc/h-box
-       :class (when done "task-done")
-       :gap "2px"
-       :children [[toggle-task-stared id stared]
-                  [toggle-task-done id done]
-                  [complete-and-reentry-task id title]
-                  [task-title id title done]
-                  [delete-task id]]])))
+  (fn [{:keys [id title stared done]} focus]
+    [rc/h-box
+     :class (when done "task-done")
+     :gap "2px"
+     :children [(when-not focus [toggle-task-stared id stared])
+                (when focus [toggle-task-done id done])
+                (when focus [complete-and-reentry-task id title])
+                [task-title id title done]
+                [delete-task id]]]))
 
 (defn task-list []
   (fn []
     (let [tasks @(subscribe [:visible-tasks])
-          all-complete? @(subscribe [:all-complete?])]
+          all-complete? @(subscribe [:all-complete?])
+          focus @(subscribe [:focus])]
       [rc/v-box
        :attr {:id "task-list"}
        :children
        (for [{:keys [id title] :as task} tasks]
          ^{:key id}
-         [task-item task])])))
+         [task-item task focus])])))
 
 (defn main-panel []
   (fn []
