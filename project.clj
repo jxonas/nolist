@@ -52,6 +52,13 @@
                     :closure-defines {goog.DEBUG false}
                     :pretty-print    false}}
 
+    {:id           "dist"
+     :source-paths ["src/cljs"]
+     :compiler     {:main            nolist.core
+                    :output-to       "build/js/app.js"
+                    :optimizations   :advanced
+                    :closure-defines {goog.DEBUG false}
+                    :pretty-print    false}}
 
     ]}
 
