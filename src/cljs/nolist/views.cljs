@@ -45,27 +45,45 @@
    {:on-save #(dispatch [:add-task %])
     :placeholder "What are we doing today?"}])
 
-(defn toggle-task-done [id done]
-  [rc/box
-   :size "none"
-   :child [rc/md-icon-button
-           :md-icon-name "zmdi-check"
-           :class (str "task-action task-done-toggle " (if done "on " "off "))
-           :on-click #(dispatch [:toggle-task-done id])
-           :size :smaller]])
+;; Task buttons
 
-(defn toggle-task-stared [id stared]
-  [rc/box
-   :size "none"
-   :child [rc/md-icon-button
-           :md-icon-name (if stared "zmdi-star" "zmdi-star-outline")
-           :class (str "task-action task-stared-toggle " (if stared "on " "off "))
-           :on-click #(dispatch [:toggle-task-stared id])
-           :size :smaller]])
+(defn task-button []
+  (fn [& {:keys [icon class on-click]
+         :or {class "btn-default"}
+         :as args}]
+    [rc/box
+     :size "none"
+     :child [rc/md-icon-button
+             :md-icon-name icon
+             :class (str "task-action " class)
+             :on-click on-click
+             :size :smaller]]))
+
+(defn toggle-task-done [{:keys [id done]}]
+  [task-button
+   :icon "zmdi-check"
+   :class (str "task-done-toggle " (if done "on " "off "))
+   :on-click #(dispatch [:toggle-task-done id])])
+
+(defn toggle-task-stared [{:keys [id stared]}]
+  [task-button
+   :icon (if stared "zmdi-star" "zmdi-star-outline")
+   :class (str "task-stared-toggle " (if stared "on " "off "))
+   :on-click #(dispatch [:toggle-task-stared id])])
+
+(defn complete-and-reentry-task [{:keys [id title]}]
+  [task-button
+   :icon "zmdi-rotate-left"
+   :on-click #(dispatch [:complete-and-reentry id title])])
+
+(defn delete-task [{:keys [id]}]
+  [task-button
+   :icon "zmdi-delete"
+   :on-click #(dispatch [:delete-task id])])
 
 (defn task-link []
   (let [show-url-modal (r/atom false)]
-    (fn [id url]
+    (fn [{:keys [id url]}]
       [:div
        [rc/box
         :size "none"
@@ -105,7 +123,7 @@
 
 (defn task-title []
   (let [editing (r/atom false)]
-    (fn [id title done url]
+    (fn [{:keys [id title done url]}]
       [rc/box
        :size "auto"
        :attr {:on-double-click #(reset! editing true)}
@@ -119,35 +137,17 @@
                  :label (if-not (seq url) title [:a {:href url, :target "_blank"} title])
                  :class (when done "done")])])))
 
-(defn complete-and-reentry-task [id title]
-  [rc/box
-   :size "none"
-   :child [rc/md-icon-button
-           :md-icon-name "zmdi-rotate-left"
-           :class "task-action"
-           :on-click #(dispatch [:complete-and-reentry id title])
-           :size :smaller]])
-
-(defn delete-task [id]
-  [rc/box
-   :size "none"
-   :child [rc/md-icon-button
-           :md-icon-name "zmdi-delete"
-           :class "task-action"
-           :on-click #(dispatch [:delete-task id])
-           :size :smaller]])
-
 (defn task-item []
-  (fn [{:keys [id title stared done url]} focus]
+  (fn [{:keys [done] :as task} focus]
     [rc/h-box
-     :class (when done "task-done")
+     :class (when (:done task) "task-done")
      :gap "2px"
-     :children [(when-not focus [toggle-task-stared id stared])
-                (when focus [toggle-task-done id done])
-                (when focus [complete-and-reentry-task id title])
-                [task-title id title done url]
-                [task-link id url]
-                [delete-task id]]]))
+     :children [(when-not focus [toggle-task-stared task])
+                (when focus [toggle-task-done task])
+                (when focus [complete-and-reentry-task task])
+                [task-title task]
+                [task-link task]
+                [delete-task task]]]))
 
 (defn task-list []
   (fn []
