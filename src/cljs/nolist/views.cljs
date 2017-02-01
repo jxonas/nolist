@@ -4,9 +4,13 @@
             [re-com.core :as rc]
             [nolist.components :as c]))
 
+(defn listen
+  [query-v]
+  @(subscribe query-v))
+
 (defn showing-selector []
-  (let [showing @(subscribe [:showing])
-        focus @(subscribe [:focus])
+  (let [showing (listen [:showing])
+        focus (listen [:focus])
         a-fn (fn [filter-kw txt]
                [rc/box
                 :size "none"
@@ -147,9 +151,9 @@
 
 (defn task-list []
   (fn []
-    (let [tasks @(subscribe [:visible-tasks])
-          all-complete? @(subscribe [:all-complete?])
-          focus @(subscribe [:focus])]
+    (let [tasks (listen [:visible-tasks])
+          all-complete? (listen [:all-complete?])
+          focus (listen [:focus])]
       [rc/v-box
        :attr {:id "task-list"}
        :children
