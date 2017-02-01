@@ -9,7 +9,7 @@
 
 (reg-sub
  :focus
- (fn [db]
+ (fn [db _]
    (:focus db)))
 
 (reg-sub
@@ -29,11 +29,13 @@
  :<- [:showing]
  :<- [:focus]
  (fn [[tasks showing focus] _]
-   (let [showing-filter-fn (case showing
-                             :active (complement :done)
-                             :done :done
-                             :all identity)
-         filter-fn (if focus #(and (:stared %) (showing-filter-fn %)) showing-filter-fn)]
+   (let [showing? (case showing
+                    :active (complement :done)
+                    :done :done
+                    :all identity)
+         filter-fn (if-not focus
+                     showing?
+                     (comp :stared showing?))]
      (filter filter-fn tasks))))
 
 (reg-sub
