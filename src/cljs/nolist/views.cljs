@@ -8,6 +8,30 @@
   [query-v]
   @(subscribe query-v))
 
+(defn simple-button
+  []
+  (fn [& {:keys [icon on-click disabled?]}]
+    [rc/md-icon-button
+     :md-icon-name icon
+     :on-click on-click
+     :disabled? disabled?
+     :size :smaller]))
+
+(defn undo-redo-buttons
+  []
+  (fn []
+    (let [undos? (listen [:undos?])
+          redos? (listen [:redos?])]
+      [rc/h-box
+       :children [[simple-button
+                   :icon "zmdi-undo"
+                   :disabled? (not undos?)
+                   :on-click #(dispatch [:undo])]
+                  [simple-button
+                   :icon "zmdi-redo"
+                   :disabled? (not redos?)
+                   :on-click #(dispatch [:redo])]]])))
+
 (defn showing-selector []
   (let [showing (listen [:showing])
         focus (listen [:focus])
@@ -32,6 +56,8 @@
                                                   "zmdi-center-focus-weak")
                                   :on-click #(dispatch [:toggle-focus])
                                   :size :smaller]]
+                         [rc/gap :size "10px"]
+                         [undo-redo-buttons]
                          [rc/h-box
                           :gap "10px"
                           :size "auto"

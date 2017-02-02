@@ -9,7 +9,8 @@
                  [org.clojure/core.async "0.2.391"]
                  [re-com "0.8.3"]
                  [com.cemerick/piggieback "0.2.1"]
-                 [figwheel-sidecar "0.5.0-2"]]
+                 [figwheel-sidecar "0.5.0-2"]
+                 [day8.re-frame/undo "0.3.2"]]
 
   :plugins [[lein-cljsbuild "1.1.4"]]
 

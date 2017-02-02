@@ -1,5 +1,6 @@
 (ns nolist.events
   (:require [re-frame.core :refer [reg-event-db reg-event-fx inject-cofx after path trim-v debug]]
+            [day8.re-frame.undo :as undo :refer [undoable]]
             [nolist.db :refer [default-db tasks->local-storage]]
             [cljs.spec :as s]))
 
@@ -28,6 +29,7 @@
 (def task-interceptors
   [check-spec-interceptor
    (path :tasks)
+   (undoable)
    ->local-storage
    (when ^boolean js/goog.DEBUG debug)
    trim-v])
@@ -95,3 +97,11 @@
   check-spec-interceptor]
  (fn [{:keys [db local-storage-tasks]} _]
    {:db (assoc default-db :tasks local-storage-tasks)}))
+
+;; Undo/Redo
+
+(day8.re-frame.undo/undo-config!
+ {:harvest-fn  (fn [app-db] (:tasks @app-db))    ;; save just tasks!
+  :reinstate-fn (fn [app-db tasks]
+                  (tasks->local-storage tasks)
+                  (swap! app-db assoc :tasks tasks))})
