@@ -85,12 +85,19 @@
  (fn [tasks [id title]]
    (assoc-in tasks [id :title] title)))
 
-(reg-event-fx
+(reg-event-db
  :complete-and-reentry
- (undoable)
- (fn [{:keys [db]} [_ id title]]
-   {:db (assoc-in db [:tasks id :done] true)
-    :dispatch [:add-task title]}))
+ task-interceptors
+ (fn [tasks [id]]
+   (let [{:keys [title link]} (get tasks id)
+         new-id (get-next-id tasks)]
+     (-> tasks
+         (assoc-in [id :done] true)
+         (assoc new-id {:id new-id
+                        :title title
+                        :done false
+                        :created (now)
+                        :link (or link "")})))))
 
 (reg-event-db
  :clear-completed
