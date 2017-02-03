@@ -68,10 +68,10 @@
    (update-in tasks [id :stared] not)))
 
 (reg-event-db
- :set-task-url
+ :set-task-link
  task-interceptors
- (fn [tasks [id url]]
-   (assoc-in tasks [id :url] url)))
+ (fn [tasks [id link]]
+   (assoc-in tasks [id :link] link)))
 
 (reg-event-db
  :delete-task

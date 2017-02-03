@@ -108,7 +108,7 @@
 (defn complete-and-reentry-task [{:keys [id title]}]
   [task-button
    :icon "zmdi-rotate-left"
-   :on-click #(dispatch [:complete-and-reentry id title])])
+   :on-click #(dispatch [:complete-and-reentry id])])
 
 (defn delete-task [{:keys [id]}]
   [task-button
@@ -116,24 +116,24 @@
    :on-click #(dispatch [:delete-task id])])
 
 (defn task-link []
-  (let [show-url-modal (r/atom false)]
-    (fn [{:keys [id url]}]
+  (let [show-link-modal (r/atom false)]
+    (fn [{:keys [id link]}]
       [:div
        [rc/box
         :size "none"
         :child [rc/md-icon-button
                 :md-icon-name "zmdi-link"
                 :class "task-action"
-                :on-click #(reset! show-url-modal true)
+                :on-click #(reset! show-link-modal true)
                 :size :smaller]]
-       (when @show-url-modal
+       (when @show-link-modal
          [rc/modal-panel
-          :backdrop-on-click #(reset! show-url-modal false)
+          :backdrop-on-click #(reset! show-link-modal false)
           :child [c/input
-                  {:value (or url "")
-                   :placeholder "task url..."
-                   :on-save #(do (dispatch [:set-task-url id %])
-                                 (reset! show-url-modal false))}]])])))
+                  {:value (or link "")
+                   :placeholder "task link..."
+                   :on-save #(do (dispatch [:set-task-link id %])
+                                 (reset! show-link-modal false))}]])])))
 
 (defn todo-input [{:keys [title on-save on-stop]}]
   (let [val (r/atom title)
@@ -157,7 +157,7 @@
 
 (defn task-title []
   (let [editing (r/atom false)]
-    (fn [{:keys [id title done url]}]
+    (fn [{:keys [id title done link]}]
       [rc/box
        :size "auto"
        :attr {:on-double-click #(reset! editing true)}
@@ -168,7 +168,7 @@
                   :on-save #(dispatch [:update-task-title id %])
                   :on-stop #(reset! editing false)}]
                 [rc/label
-                 :label (if-not (seq url) title [:a {:href url, :target "_blank"} title])
+                 :label (if-not (seq link) title [:a {:href link, :target "_blank"} title])
                  :class (when done "done")])])))
 
 (defn task-item []
