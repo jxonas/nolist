@@ -87,6 +87,7 @@
 
 (reg-event-fx
  :complete-and-reentry
+ (undoable)
  (fn [{:keys [db]} [_ id title]]
    {:db (assoc-in db [:tasks id :done] true)
     :dispatch [:add-task title]}))
