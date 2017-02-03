@@ -35,7 +35,7 @@
                     :all identity)
          filter-fn (if-not focus
                      showing?
-                     (comp :stared showing?))]
+                     #(and (:stared %) (showing? %)))]
      (filter filter-fn tasks))))
 
 (reg-sub
