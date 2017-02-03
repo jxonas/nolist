@@ -91,6 +91,15 @@
    {:db (assoc-in db [:tasks id :done] true)
     :dispatch [:add-task title]}))
 
+(reg-event-db
+ :clear-completed
+ task-interceptors
+ (fn [tasks _]
+   (->> (vals tasks)                ;; filter the ids of all tasks where :done is true
+        (filter :done)
+        (map :id)
+        (reduce dissoc tasks))))    ;; now delete these ids
+
 (reg-event-fx
  :initialize-db
  [(inject-cofx :local-storage-tasks)

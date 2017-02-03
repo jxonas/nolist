@@ -33,38 +33,46 @@
                    :on-click #(dispatch [:redo])]]])))
 
 (defn showing-selector []
-  (let [showing (listen [:showing])
-        focus (listen [:focus])
-        a-fn (fn [filter-kw txt]
-               [rc/box
-                :size "none"
-                :child [rc/hyperlink
-                        :label txt
-                        :class (str "small showing-kw "
-                                    (if (= filter-kw showing)
-                                      "text-primary"
-                                      "text-muted"))
-                        :style {:text-decoration "none"
-                                :font-weight (when (= filter-kw showing) "bold")}
-                        :on-click #(dispatch [:set-showing filter-kw])]])]
-    [rc/h-box :children [[rc/box
-                          :size "none"
-                          :align :center
-                          :child [rc/md-icon-button
-                                  :md-icon-name (if focus
-                                                  "zmdi-center-focus-strong"
-                                                  "zmdi-center-focus-weak")
-                                  :on-click #(dispatch [:toggle-focus])
-                                  :size :smaller]]
-                         [rc/gap :size "10px"]
-                         [undo-redo-buttons]
-                         [rc/h-box
-                          :gap "10px"
-                          :size "auto"
-                          :justify :end
-                          :children [[a-fn :all "All"]
-                                     [a-fn :active "Active"]
-                                     [a-fn :done "Completed"]]]]]))
+  (fn []
+    (let [showing (listen [:showing])
+          n-completed (listen [:completed-count])
+          focus (listen [:focus])
+          a-fn (fn [filter-kw txt]
+                 [rc/box
+                  :size "none"
+                  :child [rc/hyperlink
+                          :label txt
+                          :class (str "small showing-kw "
+                                      (if (= filter-kw showing)
+                                        "text-primary"
+                                        "text-muted"))
+                          :style {:text-decoration "none"
+                                  :font-weight (when (= filter-kw showing) "bold")}
+                          :on-click #(dispatch [:set-showing filter-kw])]])]
+      [rc/h-box :children [[rc/box
+                            :size "none"
+                            :align :center
+                            :child [rc/md-icon-button
+                                    :md-icon-name (if focus
+                                                    "zmdi-center-focus-strong"
+                                                    "zmdi-center-focus-weak")
+                                    :on-click #(dispatch [:toggle-focus])
+                                    :size :smaller]]
+                           [rc/gap :size "20px"]
+                           [undo-redo-buttons]
+                           [rc/gap :size "20px"]
+                           (when-not (zero? n-completed)
+                             [rc/hyperlink
+                              :label "clear completed"
+                              :on-click #(dispatch [:clear-completed])
+                              :style {:text-decoration "none"}])
+                           [rc/h-box
+                            :gap "10px"
+                            :size "auto"
+                            :justify :end
+                            :children [[a-fn :all "All"]
+                                       [a-fn :active "Active"]
+                                       [a-fn :done "Completed"]]]]])))
 
 (defn task-input []
   [c/input
