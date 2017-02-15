@@ -176,9 +176,9 @@
     [rc/h-box
      :class (when (:done task) "task-done")
      :gap "2px"
-     :children [(when-not focus [toggle-task-stared task])
-                (when focus [toggle-task-done task])
-                (when focus [complete-and-reentry-task task])
+     :children [[toggle-task-stared task]
+                [toggle-task-done task]
+                [complete-and-reentry-task task]
                 [task-title task]
                 [task-link task]
                 [delete-task task]]]))
