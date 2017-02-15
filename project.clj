@@ -1,22 +1,23 @@
 (defproject nolist "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+  :description "Productivity with [almost] no lists!"
+  :url "https://jxonas.github.io/nolist"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.9.89" :scope "provided"]
-                 [com.cognitect/transit-clj "0.8.285"]
-                 [ring "1.4.0"]
-                 [ring/ring-defaults "0.2.0"]
-                 [bk/ring-gzip "0.1.1"]
+                 [org.clojure/clojurescript "1.9.473" :scope "provided"]
+                 [com.cognitect/transit-clj "0.8.297"]
+                 [ring "1.5.1"]
+                 [ring/ring-defaults "0.2.3"]
+                 [bk/ring-gzip "0.2.1"]
                  [ring.middleware.logger "0.5.0"]
-                 [compojure "1.5.0"]
-                 [environ "1.0.3"]
-                 [reagent "0.6.0-rc"]]
+                 [compojure "1.5.2"]
+                 [environ "1.1.0"]
+                 [reagent "0.6.0"]
+                 [re-frame "0.9.2"]]
 
-  :plugins [[lein-cljsbuild "1.1.3"]
-            [lein-environ "1.0.3"]]
+  :plugins [[lein-cljsbuild "1.1.5"]
+            [lein-environ "1.1.0"]]
 
   :min-lein-version "2.6.1"
 
