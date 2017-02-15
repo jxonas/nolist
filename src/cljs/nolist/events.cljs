@@ -1,7 +1,8 @@
 (ns nolist.events
   (:require [re-frame.core :refer [reg-event-db reg-event-fx inject-cofx after path trim-v debug]]
             [day8.re-frame.undo :as undo :refer [undoable]]
-            [nolist.db :refer [default-db tasks->local-storage]]
+            [nolist.db]
+            [nolist.storage :refer [default-db tasks->local-storage]]
             [cljs.spec :as s]))
 
 ;; Utilities
