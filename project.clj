@@ -14,7 +14,8 @@
                  [compojure "1.5.2"]
                  [environ "1.1.0"]
                  [reagent "0.6.0"]
-                 [re-frame "0.9.2"]]
+                 [re-frame "0.9.2"]
+                 [day8.re-frame/undo "0.3.2"]]
 
   :plugins [[lein-cljsbuild "1.1.5"]
             [lein-environ "1.1.0"]]
@@ -41,9 +42,7 @@
               [{:id "app"
                 :source-paths ["src/cljs" "src/cljc"]
 
-                :figwheel true
-                ;; Alternatively, you can configure a function to run every time figwheel reloads.
-                ;; :figwheel {:on-jsload "nolist.core/on-figwheel-reload"}
+                :figwheel     {:on-jsload "nolist.core/mount-root"}
 
                 :compiler {:main nolist.core
                            :asset-path "js/compiled/out"
@@ -104,7 +103,8 @@
   :doo {:build "test"}
 
   :profiles {:dev
-             {:dependencies [[figwheel "0.5.4-4"]
+             {:dependencies [[re-frisk "0.3.2"]
+                             [figwheel "0.5.4-4"]
                              [figwheel-sidecar "0.5.4-4"]
                              [com.cemerick/piggieback "0.2.1"]
                              [org.clojure/tools.nrepl "0.2.12"]]
