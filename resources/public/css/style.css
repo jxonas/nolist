@@ -1,3 +1,42 @@
-h1 {
-  text-decoration: underline;
+#task-panel {
+    margin: 30px auto;
+    width: 600px;
+}
+
+#task-list {
+    margin-top: 10px;
+}
+
+ul#filter {
+    float: right;
+}
+
+ul#filter li {
+    display: inline;
+    float: left;
+    padding: 0px 5px 0px 5px;
+    font-size: 12px;
+}
+
+.task-button {
+    padding-right: 5px;
+}
+
+ul#filter li.selected {
+    font-weight: bold;
+}
+
+table {
+    table-layout: auto;
+    border-collapse: collapse;
+    margin: auto;
+    width: 600px;
+}
+
+table td.absorbing-column {
+    width: 100%;
+}
+
+.done {
+    text-decoration: line-through;
 }
