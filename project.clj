@@ -4,12 +4,13 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
-  :dependencies [[org.clojure/clojure "1.8.0"]
+  :dependencies [[org.clojure/clojure "1.9.0-alpha14"]
                  [org.clojure/clojurescript "1.9.473" :scope "provided"]
                  [com.cognitect/transit-clj "0.8.297"]
                  [ring "1.5.1"]
                  [ring/ring-defaults "0.2.3"]
                  [bk/ring-gzip "0.2.1"]
+                 [onelog "0.4.6"]
                  [ring.middleware.logger "0.5.0"]
                  [compojure "1.5.2"]
                  [environ "1.1.0"]
@@ -104,13 +105,13 @@
 
   :profiles {:dev
              {:dependencies [[re-frisk "0.3.2"]
-                             [figwheel "0.5.4-4"]
-                             [figwheel-sidecar "0.5.4-4"]
+                             [figwheel "0.5.9"]
+                             [figwheel-sidecar "0.5.9"]
                              [com.cemerick/piggieback "0.2.1"]
                              [org.clojure/tools.nrepl "0.2.12"]]
 
-              :plugins [[lein-figwheel "0.5.4-4"]
-                        [lein-doo "0.1.6"]]
+              :plugins [[lein-figwheel "0.5.9"]
+                        [lein-doo "0.1.7"]]
 
               :source-paths ["dev"]
               :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}
