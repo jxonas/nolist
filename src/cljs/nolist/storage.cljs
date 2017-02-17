@@ -4,6 +4,7 @@
 
 (def default-db
   {:tasks (sorted-map)
+   :mode :planning
    :showing :all
    :focus false})
 

@@ -3,6 +3,11 @@
   (:require [re-frame.core :refer [reg-sub subscribe]]))
 
 (reg-sub
+ :mode
+ (fn [db]
+   (:mode db)))
+
+(reg-sub
  :showing
  (fn [db]
    (:showing db)))
@@ -49,6 +54,12 @@
  :<- [:tasks]
  (fn [tasks _]
    (count (filter :done tasks))))
+
+(reg-sub
+ :has-completed
+ :<- [:completed-count]
+ (fn [n _]
+   (> n 0)))
 
 (reg-sub
  :status-counts

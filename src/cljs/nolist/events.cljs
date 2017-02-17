@@ -38,6 +38,12 @@
 ;; Event handlers
 
 (reg-event-db
+ :set-mode
+ [check-spec-interceptor (path :mode) trim-v]
+ (fn [old-mode [new-mode]]
+   new-mode))
+
+(reg-event-db
  :set-showing
  [check-spec-interceptor (path :showing) trim-v]
  (fn [old-kw [new-kw]]

@@ -24,4 +24,6 @@
 (s/def ::showing #{:all :active :done})
 (s/def ::focus boolean?)
 
-(s/def ::db (s/keys :req-un [::tasks ::showing ::focus]))
+(s/def ::mode #{:planning :execution})
+
+(s/def ::db (s/keys :req-un [::tasks ::mode ::showing ::focus]))

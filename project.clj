@@ -16,7 +16,8 @@
                  [environ "1.1.0"]
                  [reagent "0.6.0"]
                  [re-frame "0.9.2"]
-                 [day8.re-frame/undo "0.3.2"]]
+                 [day8.re-frame/undo "0.3.2"]
+                 [cljsjs/semantic-ui-react "0.64.7-0"]]
 
   :plugins [[lein-cljsbuild "1.1.5"]
             [lein-environ "1.1.0"]]
