@@ -1,0 +1,8 @@
+.main-container {
+    margin-top: 2em;
+}
+
+.task-title.done {
+    text-decoration: line-through;
+}
+
