@@ -58,11 +58,11 @@
                            :main nolist.test-runner
                            :optimizations :none}}
 
-               {:id "min"
+               {:id "dist"
                 :source-paths ["src/cljs" "src/cljc"]
                 :jar true
                 :compiler {:main nolist.core
-                           :output-to "resources/public/js/compiled/nolist.js"
+                           :output-to "build/js/nolist.js"
                            :output-dir "target"
                            :source-map-timestamp true
                            :optimizations :advanced
