@@ -180,7 +180,7 @@
                 [toggle-task-done task]
                 [complete-and-reentry-task task]
                 [task-title task]
-                [task-link task]
+                ; [task-link task]
                 [delete-task task]]]))
 
 (defn task-list []
